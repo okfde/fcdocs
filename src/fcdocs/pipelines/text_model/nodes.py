@@ -14,6 +14,10 @@ def get_baseline_model():
     return BaselineModel()
 
 
+def extract_y(data: pd.DataFrame) -> pd.Series:
+    return pd.Series(True, index=data.index)
+
+
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
     y_pred = model.predict(X_test)
     score = f1_score(y_test, y_pred)

@@ -19,11 +19,13 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
     """
 
     def load():
+        print("PART", partitioned_input)
         for _partition_key, partition_load_func in sorted(partitioned_input.items()):
             # load the PDF data
             docdata: DocumentData = partition_load_func()
             meta = docdata.meta
             meta["text"] = docdata.text
+            meta["image"] = docdata.image
             yield meta
 
     df = pd.DataFrame(load())
@@ -33,12 +35,10 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
 
 def split_data(
     text_and_meta_dataframe: pd.DataFrame,
-) -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
-    X_train = text_and_meta_dataframe.sample(frac=0.9)
-    y_train = pd.Series(True, index=range(len(X_train)))
-    X_test = text_and_meta_dataframe.drop(X_train.index)
-    y_test = pd.Series(True, index=range(len(X_test)))
-    return X_train, y_train, X_test, y_test
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    data_train = text_and_meta_dataframe.sample(frac=0.9)
+    data_test = text_and_meta_dataframe.drop(data_train.index)
+    return data_train, data_test
 
 
 def sum_file_sizes(text_and_meta_dataframe: pd.DataFrame) -> int:

@@ -21,7 +21,7 @@ def create_pipeline(**kwargs):
             node(
                 func=split_data,
                 inputs="text_and_meta_dataframe",
-                outputs=["X_train", "y_train", "X_test", "y_test"],
+                outputs=["data_train", "data_test"],
                 name="split_data",
             ),
         ]
