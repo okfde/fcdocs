@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_URL=https://fragdenstaat.de/api/v1/attachment/?filetype=application/pdf
+BASE_URL=https://fragdenstaat.de/api/v1/attachment/?filetype=application/pdf\&offset=50\&limit=200
 
 DATA_PATH=data/01_raw/pdfdocs_01
 

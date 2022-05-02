@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from .nodes import get_text_and_meta, sum_file_sizes
+from .nodes import get_text_and_meta, split_data, sum_file_sizes
 
 
 def create_pipeline(**kwargs):
@@ -17,6 +17,12 @@ def create_pipeline(**kwargs):
                 inputs="text_and_meta_dataframe",
                 outputs="sum_of_filesizes",
                 name="sum_file_sizes",
+            ),
+            node(
+                func=split_data,
+                inputs="text_and_meta_dataframe",
+                outputs=["X_train", "y_train", "X_test", "y_test"],
+                name="split_data",
             ),
         ]
     )

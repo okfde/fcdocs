@@ -4,6 +4,7 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from .pipelines import data_processing as dp
+from .pipelines import text_model as tm
 
 
 def register_pipelines() -> Dict[str, Pipeline]:
@@ -14,8 +15,10 @@ def register_pipelines() -> Dict[str, Pipeline]:
 
     """
     data_processing_pipeline = dp.create_pipeline()
+    text_model_pipeline = tm.create_pipeline()
 
     return {
-        "__default__": data_processing_pipeline,
+        "__default__": data_processing_pipeline + text_model_pipeline,
         "dp": data_processing_pipeline,
+        "tm": text_model_pipeline,
     }
