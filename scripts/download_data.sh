@@ -4,6 +4,10 @@ BASE_URL=https://fragdenstaat.de/api/v1/attachment/?filetype=application/pdf
 
 DATA_PATH=data/01_raw/pdfdocs_01
 
+if [ ! -e "$DATA_PATH" ] ; then
+    mkdir "$DATA_PATH"
+fi
+
 curl "$BASE_URL" | jq -c -r '.objects[]' | while read -r att; do
     fileid="$(echo $att | jq '.id')"
     echo $fileid
