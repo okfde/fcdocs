@@ -81,7 +81,11 @@ class DocumentDataSet(AbstractDataSet):
         else:
             meta = {}
 
-        return DocumentData(text=text, image=Image.open(image_filepath), meta=meta)
+        img = Image.open(image_filepath)
+        img_in_mem = img.copy()
+        img.close()
+
+        return DocumentData(text=text, image=img_in_mem, meta=meta)
 
     def get_filepaths(self):
         return (
