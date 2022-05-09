@@ -28,7 +28,6 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
         return meta
 
     def load():
-        print("PART", partitioned_input)
         with ThreadPoolExecutor() as executor:
             return executor.map(
                 load_single,

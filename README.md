@@ -3,7 +3,7 @@
 ## Download sample data
 
 ```bash
-bash scripts/download_data.sh
+python scripts/download_data.py
 ```
 
 
