@@ -1,10 +1,10 @@
-from kedro.pipeline import Pipeline, node
+from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import get_text_and_meta, split_data, sum_file_sizes
 
 
-def create_pipeline(**kwargs):
-    return Pipeline(
+def create_pipeline(**kwargs) -> Pipeline:
+    return pipeline(
         [
             node(
                 func=get_text_and_meta,
@@ -24,5 +24,8 @@ def create_pipeline(**kwargs):
                 outputs=["data_train", "data_test"],
                 name="split_data",
             ),
-        ]
+        ],
+        namespace="data_processing",
+        inputs="pdfdocuments",
+        outputs=["data_train", "data_test"],
     )
