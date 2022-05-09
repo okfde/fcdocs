@@ -1,4 +1,5 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Tuple
 
 import pandas as pd
@@ -18,15 +19,21 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
         Pandas DataFrame representing a concatenation of all loaded partitions.
     """
 
+    def load_single(arg):
+        _partition_key, partition_load_func = arg
+        docdata: DocumentData = partition_load_func()
+        meta = docdata.meta
+        meta["text"] = docdata.text
+        meta["image"] = docdata.image
+        return meta
+
     def load():
         print("PART", partitioned_input)
-        for _partition_key, partition_load_func in sorted(partitioned_input.items()):
-            # load the PDF data
-            docdata: DocumentData = partition_load_func()
-            meta = docdata.meta
-            meta["text"] = docdata.text
-            meta["image"] = docdata.image
-            yield meta
+        with ThreadPoolExecutor() as executor:
+            return executor.map(
+                load_single,
+                sorted(partitioned_input.items()),
+            )
 
     df = pd.DataFrame(load())
     logger.info("DTypes of dataframe: \n%s", df.dtypes)
@@ -36,7 +43,7 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
 def split_data(
     text_and_meta_dataframe: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    data_train = text_and_meta_dataframe.sample(frac=0.9)
+    data_train = text_and_meta_dataframe.sample(frac=0.9, random_state=0)
     data_test = text_and_meta_dataframe.drop(data_train.index)
     return data_train, data_test
 
