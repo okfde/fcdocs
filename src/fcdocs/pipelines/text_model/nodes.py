@@ -5,6 +5,7 @@ generated using Kedro 0.18.0
 import logging
 
 import pandas as pd
+from sklearn.datasets import make_classification
 from sklearn.metrics import (
     accuracy_score,
     balanced_accuracy_score,
@@ -35,7 +36,8 @@ def extract_X(text_and_meta_dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_y(data: pd.DataFrame) -> pd.Series:
-    return pd.Series(True, index=data.index)
+    _, y = make_classification(n_samples=len(data), n_classes=2)
+    return y == 0
 
 
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
