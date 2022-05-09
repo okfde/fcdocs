@@ -1,36 +1,47 @@
+"""
+This is a boilerplate pipeline 'text_model'
+generated using Kedro 0.18.0
+"""
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import evaluate_model, extract_features, extract_y, get_baseline_model
+from .nodes import evaluate_model, extract_x_y, get_model, train_model
 
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         [
             node(
-                func=get_baseline_model,
-                inputs=None,
-                outputs="baseline_model",
-                name="get_baseline_model",
+                func=extract_x_y,
+                inputs="data_train",
+                outputs=["X_train", "y_train"],
+                name="extract_train",
             ),
             node(
-                func=extract_y,
+                func=extract_x_y,
                 inputs="data_test",
-                outputs="y_test",
-                name="extract_y_test",
+                outputs=["X_test", "y_test"],
+                name="extract_test",
             ),
             node(
-                func=extract_features,
-                inputs="data_test",
-                outputs="X_test",
-                name="extract_features",
+                func=get_model,
+                inputs=["model_class", "model_args"],
+                outputs=["untrained_model", "params"],
+                name="get_model",
+            ),
+            node(
+                func=train_model,
+                inputs=["untrained_model", "X_train", "y_train"],
+                outputs="model",
+                name="train_model",
             ),
             node(
                 func=evaluate_model,
-                inputs=["baseline_model", "X_test", "y_test"],
-                outputs="predicted_test_dataframe",
-                name="evaluate_baseline_model",
+                inputs=["model", "X_test", "y_test"],
+                outputs="scores",
+                name="evaluate_model",
             ),
         ],
-        inputs=["data_test"],
+        inputs=["model_class", "model_args", "data_train", "data_test"],
         namespace="image_model",
+        outputs=["model"],
     )

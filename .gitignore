@@ -155,5 +155,6 @@ venv.bak/
 .mypy_cache/
 
 data/01_raw/pdf*
+data/09_tracking/*
 
 .vscode/

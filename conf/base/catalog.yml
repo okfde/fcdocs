@@ -9,3 +9,25 @@ pdfdocuments:
   dataset: fcdocs.extras.datasets.document_dataset.DocumentDataSet
   path: data/01_raw/pdfdocs_01/
   filename_suffix: ".pdf"
+
+
+
+
+image_model.scores:
+  type: tracking.MetricsDataSet
+  filepath: data/09_tracking/image_model_score.json
+
+image_model.params:
+  type: tracking.JSONDataSet
+  filepath: data/09_tracking/image_model_params.json
+
+
+
+
+text_model.scores:
+  type: tracking.MetricsDataSet
+  filepath: data/09_tracking/text_model_score.json
+
+text_model.params:
+  type: tracking.JSONDataSet
+  filepath: data/09_tracking/text_model_param.json

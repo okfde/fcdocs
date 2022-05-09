@@ -1,0 +1,7 @@
+image_model:
+  model_class: "BaselineModel"
+  model_args: {}
+
+text_model:
+  model_class: "BaselineModel"
+  model_args: {}
