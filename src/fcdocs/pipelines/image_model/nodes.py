@@ -49,7 +49,7 @@ def extract_X(text_and_meta_dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_y(data: pd.DataFrame) -> pd.Series:
-    return data.is_redacted
+    return data.is_redacted.apply(float)
 
 
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
