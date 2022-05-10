@@ -66,5 +66,5 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, 
     return scores
 
 
-def train_model(model, X_train: pd.DataFrame, y_train: pd.Series):
-    return model.fit(X_train, y_train)
+def train_model(untrained_model, X_train: pd.DataFrame, y_train: pd.Series):
+    return untrained_model.fit(X_train, y_train)
