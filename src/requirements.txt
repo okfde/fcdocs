@@ -5,9 +5,11 @@ isort~=5.0
 jupyter~=1.0
 jupyterlab~=3.0
 kedro==0.18.0
+kedro-viz==4.5.0
 nbstripout~=0.4
 pytest-cov~=3.0
 pytest-mock>=1.7.1, <2.0
 pytest~=6.2
+scikit-learn==1.0.2
 
 -e git+https://github.com/okfde/django-filingcabinet.git@master#egg=django-filingcabinet
