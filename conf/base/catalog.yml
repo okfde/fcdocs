@@ -13,14 +13,17 @@ pdfdocuments:
 data_processing.text_and_meta_dataframe:
   type: pickle.PickleDataSet
   filepath: data/02_intermediate/text_and_meta_dataframe.pickle
+  versioned: true
 
 data_test:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/data_test.pickle
+  versioned: true
 
 data_train:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/data_train.pickle
+  versioned: true
 
 image_model.scores:
   type: tracking.MetricsDataSet
