@@ -6,6 +6,7 @@ image-based models.
 ## Installation
 
 You need a recent version of python (3.8+ should work).
+You also need the `pdftoppm` tool from the poppler utils and `imagemagick`.
 Then install the dependencies using
 
 ```

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from pathlib import Path, PurePosixPath
 from typing import Any, NamedTuple
 
@@ -98,6 +99,7 @@ class DocumentDataSet(AbstractDataSet):
         pdf = get_pdf_processor(self._filepath)
         meta = pdf.get_meta()
         meta["_num_pages"] = pdf.num_pages
+        meta["size"] = os.path.getsize(self._filepath)
         for _page_number, wand_image in pdf.get_images(pages=[1]):
             wand_image.transform(resize="{}x".format(THUMBNAIL_WIDTH))
             img_blob = wand_image.make_blob("RGB")
