@@ -1,7 +1,6 @@
 import logging
 
 import pandas as pd
-from PIL import Image
 from sklearn.metrics import (
     accuracy_score,
     balanced_accuracy_score,
@@ -13,23 +12,6 @@ from sklearn.metrics import (
 from . import models
 
 
-def dark_pixel_ratio(image: Image):
-    dark_pixels = 0
-    greyscale_image = image.convert("L")
-    for color in greyscale_image.getdata():
-        if color / 255 < 0.25:
-            dark_pixels += 1
-
-    total_pixels = greyscale_image.width * greyscale_image.height
-    return dark_pixels / total_pixels
-
-
-def extract_dark_ratio(
-    text_and_meta_dataframe: pd.DataFrame,
-) -> pd.Series:
-    return text_and_meta_dataframe["image"].map(dark_pixel_ratio)
-
-
 def get_model(model_class: str, model_args: dict):
     model = getattr(models, model_class)(**model_args)
     return model, {"class": model_class, "args": model_args}
@@ -39,13 +21,8 @@ def extract_x_y(data: pd.DataFrame):
     return extract_X(data), extract_y(data)
 
 
-def extract_X(text_and_meta_dataframe: pd.DataFrame) -> pd.DataFrame:
-    features = pd.DataFrame(
-        index=text_and_meta_dataframe.index,
-    )
-    features["id"] = text_and_meta_dataframe["id"]
-    features["dark_ratio"] = extract_dark_ratio(text_and_meta_dataframe).to_frame()
-    return features
+def extract_X(data: pd.DataFrame) -> pd.DataFrame:
+    return data[["id", "dark_ratio"]]
 
 
 def extract_y(data: pd.DataFrame) -> pd.Series:

@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Tuple
 
 import pandas as pd
+from PIL import Image
 
 from ...extras.datasets.document_dataset import DocumentData
 
@@ -51,3 +52,29 @@ def sum_file_sizes(text_and_meta_dataframe: pd.DataFrame) -> int:
     sum_of_filesizes = text_and_meta_dataframe["size"].sum()
     logger.info("Combined file size: %s Bytes", sum_of_filesizes)
     return sum_of_filesizes
+
+
+# Features
+def calculate_features(text_and_meta_dataframe: pd.DataFrame) -> pd.DataFrame:
+    frame_with_features = text_and_meta_dataframe.copy()
+    frame_with_features["dark_ratio"] = extract_dark_ratio(
+        frame_with_features["image"]
+    ).to_frame()
+    return frame_with_features
+
+
+def dark_pixel_ratio(image: Image):
+    dark_pixels = 0
+    greyscale_image = image.convert("L")
+    for color in greyscale_image.getdata():
+        if color / 255 < 0.25:
+            dark_pixels += 1
+
+    total_pixels = greyscale_image.width * greyscale_image.height
+    return dark_pixels / total_pixels
+
+
+def extract_dark_ratio(
+    images: pd.Series,
+) -> pd.Series:
+    return images.map(dark_pixel_ratio)

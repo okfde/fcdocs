@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import get_text_and_meta, split_data, sum_file_sizes
+from .nodes import calculate_features, get_text_and_meta, split_data, sum_file_sizes
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -13,6 +13,12 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="get_text_and_meta",
             ),
             node(
+                func=calculate_features,
+                inputs="text_and_meta_dataframe",
+                outputs="data_with_features",
+                name="calculate_features",
+            ),
+            node(
                 func=sum_file_sizes,
                 inputs="text_and_meta_dataframe",
                 outputs="sum_of_filesizes",
@@ -20,7 +26,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=split_data,
-                inputs="text_and_meta_dataframe",
+                inputs="data_with_features",
                 outputs=["data_train", "data_test"],
                 name="split_data",
             ),

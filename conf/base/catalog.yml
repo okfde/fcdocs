@@ -10,8 +10,17 @@ pdfdocuments:
   path: data/01_raw/pdfdocs_01/
   filename_suffix: ".pdf"
 
+data_processing.text_and_meta_dataframe:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/text_and_meta_dataframe.pickle
 
+data_test:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/data_test.pickle
 
+data_train:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/data_train.pickle
 
 image_model.scores:
   type: tracking.MetricsDataSet

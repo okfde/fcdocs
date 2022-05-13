@@ -26,13 +26,8 @@ def extract_x_y(data: pd.DataFrame):
     return extract_X(data), extract_y(data)
 
 
-def extract_X(text_and_meta_dataframe: pd.DataFrame) -> pd.DataFrame:
-    features = pd.DataFrame(
-        index=text_and_meta_dataframe.index,
-    )
-    features["id"] = text_and_meta_dataframe["id"]
-    features["text"] = text_and_meta_dataframe["text"]
-    return features
+def extract_X(data: pd.DataFrame) -> pd.DataFrame:
+    return data[["id", "text"]]
 
 
 def extract_y(data: pd.DataFrame) -> pd.Series:
