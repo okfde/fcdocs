@@ -1,68 +1,77 @@
 # fcdocs
 
-## Download sample data
+This is a kedro project to classify documents using various text- and
+image-based models.
 
-```bash
-python scripts/download_data.py
-```
+## Installation
 
-
-## Kedro Overview
-
-This is your new Kedro project, which was generated using `Kedro 0.18.0`.
-
-Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get started.
-
-## Rules and guidelines
-
-In order to get the best out of the template:
-
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a [data engineering convention](https://kedro.readthedocs.io/en/stable/faq/faq.html#what-is-data-engineering-convention)
-* Don't commit data to your repository
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
-
-## How to install dependencies
-
-Declare any dependencies in `src/requirements.txt` for `pip` installation and `src/environment.yml` for `conda` installation.
-
-To install them, run:
+You need a recent version of python (3.8+ should work).
+Then install the dependencies using
 
 ```
 pip install -r src/requirements.txt
 ```
 
-## How to run your Kedro pipeline
+## Download sample data
 
-You can run your Kedro project with:
+The input data needs to be placed in `data/01_raw`.
+The folders in `data/` follow the [layered data engineering convention](https://kedro.readthedocs.io/en/stable/faq/faq.html#what-is-data-engineering-convention).
+You can use the following script to download a bunch of documents from the
+[FragDenStaat.de-API](https://fragdenstaat.de/api/) 
+
+```bash
+python scripts/download_data.py
+```
+
+## How to run the pipeline
+
+The project currently consists of three pipelines:
+
+1. `data_processing` (dp): Cleans the input data and calculates some features from it
+2. `image_model` (im): Trains and evaluates an image-based model
+3. `text_model` (tm): Trains and evaluates a text-based model
+
+You can run them all using
 
 ```
 kedro run
 ```
 
-## How to test your Kedro project
+To run only one of the pipelines you can add the `--pipeline` parameter with the
+short-name of a pipeline (`dp`, `im`, `tm`)
+For example to only run the image model pipeline, use
 
-Have a look at the file `src/tests/test_run.py` for instructions on how to write your tests. You can run your tests as follows:
+```
+kedro run --pipeline im
+```
+
+> ℹ️ You need to run the data processing pipeline at least once before running
+> the model pipelines
+
+## Run tests
+
+You can run tests (see `src/tests/`) with
 
 ```
 kedro test
 ```
 
-To configure the coverage threshold, go to the `.coveragerc` file.
+> Note: We currently don't have tests
 
-## Project dependencies
+## Locking project dependencies
 
-To generate or update the dependency requirements for your project:
+To generate or update the dependency requirements run:
 
 ```
 kedro build-reqs
 ```
 
-This will `pip-compile` the contents of `src/requirements.txt` into a new file `src/requirements.lock`. You can see the output of the resolution by opening `src/requirements.lock`.
-
-After this, if you'd like to update your project requirements, please update `src/requirements.txt` and re-run `kedro build-reqs`.
+This will `pip-compile` the contents of `src/requirements.txt` into a new file
+`src/requirements.lock`. You can see the output of the resolution by opening
+`src/requirements.lock`.
 
 [Further information about project dependencies](https://kedro.readthedocs.io/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
+
 
 ## How to work with Kedro and notebooks
 
@@ -124,6 +133,11 @@ To automatically strip out all output cell contents before committing to `git`, 
 
 > *Note:* Your output cells will be retained locally.
 
-## Package your Kedro project
+
+## Further Documentation
+
+Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get started.
+
+## Packaging
 
 [Further information about building project documentation and packaging your project](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
