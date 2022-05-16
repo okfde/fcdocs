@@ -17,11 +17,21 @@ pip install -r src/requirements.txt
 
 The input data needs to be placed in `data/01_raw`.
 The folders in `data/` follow the [layered data engineering convention](https://kedro.readthedocs.io/en/stable/faq/faq.html#what-is-data-engineering-convention).
-You can use the following script to download a bunch of documents from the
+
+A script to download the annotated documents from the
+[`fcdocs-annotate`](https://github.com/okfde/fcdocs-annotate) api is provided
+in `scripts/download_data.py`. Assuming your server runs on 127.0.0.1:8000, 
+you can use the following command
+
+```bash
+python scripts/download_data.py --document-endpoint http://127.0.0.1:8000/api/document/ --feature-endpoint http://127.0.0.1:8000/api/feature/
+```
+
+You can use the following script to download a bunch of attachments from the
 [FragDenStaat.de-API](https://fragdenstaat.de/api/) 
 
 ```bash
-python scripts/download_data.py
+python scripts/download_data_fds.py
 ```
 
 ## How to run the pipeline
