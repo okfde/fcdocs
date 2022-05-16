@@ -5,3 +5,6 @@ image_model:
 text_model:
   model_class: "BaselineModel"
   model_args: {}
+
+data_processing:
+  max_workers: 4

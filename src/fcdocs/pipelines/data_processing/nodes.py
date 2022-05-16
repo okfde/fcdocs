@@ -10,7 +10,9 @@ from ...extras.datasets.document_dataset import DocumentData
 logger = logging.getLogger(__name__)
 
 
-def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.DataFrame:
+def get_text_and_meta(
+    partitioned_input: dict[str, Callable[[], Any]], max_workers: int
+) -> pd.DataFrame:
     """Concatenate input partitions into one pandas DataFrame.
 
     Args:
@@ -29,7 +31,7 @@ def get_text_and_meta(partitioned_input: dict[str, Callable[[], Any]]) -> pd.Dat
         return meta
 
     def load():
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             return executor.map(
                 load_single,
                 sorted(partitioned_input.items()),

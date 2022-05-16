@@ -26,6 +26,8 @@ python scripts/download_data.py
 
 ## How to run the pipeline
 
+> ℹ️ Also see the [Configuration](#configuration) section
+
 The project currently consists of three pipelines:
 
 1. `data_processing` (dp): Cleans the input data and calculates some features from it
@@ -48,6 +50,19 @@ kedro run --pipeline im
 
 > ℹ️ You need to run the data processing pipeline at least once before running
 > the model pipelines
+
+## Configuration
+
+You can configure the used models and their parameters in the `conf/base/parameters.yml` file.
+
+By default, the data processing pipeline uses 4 threads for pdf conversion.
+If you have more cpu cores, you can change this number by creating a
+`conf/local/parameters.yml` file with the following content (replace YOUR_NUMBER_OF_WORKERS):
+
+```yaml
+data_processing:
+  max_workers: YOUR_NUMBER_OF_WORKERS
+```
 
 ## Run tests
 

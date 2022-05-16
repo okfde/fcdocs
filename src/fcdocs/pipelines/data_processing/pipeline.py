@@ -8,7 +8,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=get_text_and_meta,
-                inputs="pdfdocuments",
+                inputs=["pdfdocuments", "params:max_workers"],
                 outputs="text_and_meta_dataframe",
                 name="get_text_and_meta",
             ),
