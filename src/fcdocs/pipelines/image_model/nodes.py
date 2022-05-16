@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import pandas as pd
 from sklearn.metrics import (
@@ -17,16 +18,12 @@ def get_model(model_class: str, model_args: dict):
     return model, {"class": model_class, "args": model_args}
 
 
-def extract_x_y(data: pd.DataFrame):
-    return extract_X(data), extract_y(data)
+def extract_x_y(data: pd.DataFrame, x_features: List[str], predict_feature: str):
+    return extract_X(data, x_features), data[predict_feature].apply(float)
 
 
-def extract_X(data: pd.DataFrame) -> pd.DataFrame:
-    return data[["id", "dark_ratio"]]
-
-
-def extract_y(data: pd.DataFrame) -> pd.Series:
-    return data.is_redacted.apply(float)
+def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
+    return data[features]
 
 
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:

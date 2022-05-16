@@ -1,10 +1,14 @@
 image_model:
   model_class: "BaselineModel"
   model_args: {}
+  input_features: ['dark_ratio']
+  predict_feature: 'geschwaerzt'
 
 text_model:
   model_class: "BaselineModel"
   model_args: {}
+  input_features: ['text']
+  predict_feature: 'bescheid'
 
 data_processing:
   max_workers: 4

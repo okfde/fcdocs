@@ -12,13 +12,21 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=extract_x_y,
-                inputs="data_train",
+                inputs=[
+                    "data_train",
+                    "params:input_features",
+                    "params:predict_feature",
+                ],
                 outputs=["X_train", "y_train"],
                 name="extract_train",
             ),
             node(
                 func=extract_x_y,
-                inputs="data_test",
+                inputs=[
+                    "data_test",
+                    "params:input_features",
+                    "params:predict_feature",
+                ],
                 outputs=["X_test", "y_test"],
                 name="extract_test",
             ),
