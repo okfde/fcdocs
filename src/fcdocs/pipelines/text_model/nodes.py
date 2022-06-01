@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'text_model'
 generated using Kedro 0.18.0
 """
 import logging
-from typing import List
+from typing import Dict, List
 
 import pandas as pd
 from sklearn.metrics import (
@@ -17,7 +17,7 @@ from sklearn.metrics import (
 from . import models
 
 
-def get_model(model_class: str, model_args: dict):
+def get_model(model_class: str, model_args: Dict):
     model = getattr(models, model_class)(**model_args)
     return model, {"class": model_class, "args": model_args}
 
@@ -30,7 +30,7 @@ def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
     return data[features]
 
 
-def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> dict[str, float]:
+def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, float]:
     y_pred = model.predict(X_test)
     scores = {
         "f1_score": f1_score(y_test, y_pred),

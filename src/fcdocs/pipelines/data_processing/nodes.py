@@ -1,6 +1,6 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Dict, Tuple
 
 import pandas as pd
 from PIL import Image
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_text_and_meta(
-    partitioned_input: dict[str, Callable[[], Any]], max_workers: int
+    partitioned_input: Dict[str, Callable[[], Any]], max_workers: int
 ) -> pd.DataFrame:
     """Concatenate input partitions into one pandas DataFrame.
 

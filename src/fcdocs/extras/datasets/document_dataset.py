@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path, PurePosixPath
-from typing import Any, NamedTuple
+from typing import Any, Dict, NamedTuple
 
 from filingcabinet.pdf_utils import PDFProcessor
 from kedro.io import AbstractDataSet
@@ -26,7 +26,7 @@ class DocumentData(NamedTuple):
 
     text: str
     image: Image.Image
-    meta: dict[str, str]
+    meta: Dict[str, str]
 
 
 class DocumentDataSet(AbstractDataSet):
@@ -119,6 +119,6 @@ class DocumentDataSet(AbstractDataSet):
         with open(meta_filepath, "w") as f:
             json.dump(data.meta, f)
 
-    def _describe(self) -> dict[str, Any]:
+    def _describe(self) -> Dict[str, Any]:
         """Returns a dict that describes the attributes of the dataset"""
         return dict(filepath=self._filepath)
