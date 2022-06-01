@@ -27,6 +27,11 @@ you can use the following command
 python scripts/download_data.py --document-endpoint http://127.0.0.1:8000/api/document/ --feature-endpoint http://127.0.0.1:8000/api/feature/
 ```
 
+This project was developed by the [FragDenStaat](https://fragdenstaat.de)-[team](https://fragdenstaat.de/team)
+at [Open Knowledge Foundation Deutschland e.V.](okfn.de).
+FragDenStaat provides a simple interface to make and publish
+freedom-of-information requests to public bodies.
+
 You can use the following script to download a bunch of attachments from the
 [FragDenStaat.de-API](https://fragdenstaat.de/api/) 
 
