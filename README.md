@@ -6,7 +6,8 @@ image-based models.
 ## Installation
 
 You need a recent version of python (3.8+ should work).
-You also need the `pdftoppm` tool from the poppler utils and `imagemagick`.
+Install all system dependencies as defined in [django-filingcabinet's `default.nix`](https://github.com/okfde/django-filingcabinet/blob/master/default.nix).
+
 Then install the dependencies using
 
 ```
