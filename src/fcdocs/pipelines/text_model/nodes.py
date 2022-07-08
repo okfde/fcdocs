@@ -23,7 +23,12 @@ def get_model(model_class: str, model_args: Dict):
 
 
 def extract_x_y(data: pd.DataFrame, x_features: List[str], predict_feature: str):
-    return extract_X(data, x_features), data[predict_feature].apply(float)
+
+    logger = logging.getLogger(__name__)
+    logger.info("DTypes of dataframe: \n%s", data.dtypes)
+
+    data = data[data[predict_feature].notna()]
+    return extract_X(data, x_features), data[predict_feature].astype("bool")
 
 
 def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
@@ -34,6 +39,8 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, 
     y_pred = model.predict(X_test)
     scores = {
         "f1_score": f1_score(y_test, y_pred),
+        "macro_f1_score": f1_score(y_test, y_pred, average="macro"),
+        "micro_f1_score": f1_score(y_test, y_pred, average="micro"),
         "accuracy": accuracy_score(y_test, y_pred),
         "balanced_accuracy": balanced_accuracy_score(y_test, y_pred),
         "precision": precision_score(y_test, y_pred),

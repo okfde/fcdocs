@@ -1,8 +1,9 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 
 import pandas as pd
+import spacy
 from PIL import Image
 
 from ...extras.datasets.document_dataset import DocumentData
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_text_and_meta(
-    partitioned_input: Dict[str, Callable[[], Any]], max_workers: int
+    partitioned_input: Dict[str, Callable[[], Any]], max_workers: int, spacy_model: str
 ) -> pd.DataFrame:
     """Concatenate input partitions into one pandas DataFrame.
 
@@ -24,7 +25,9 @@ def get_text_and_meta(
 
     def load_single(arg):
         _partition_key, partition_load_func = arg
-        docdata: DocumentData = partition_load_func()
+        docdata: Optional[DocumentData] = partition_load_func()
+        if docdata is None:
+            return None
         meta = docdata.meta
         meta["text"] = docdata.text
         meta["image"] = docdata.image
@@ -32,20 +35,30 @@ def get_text_and_meta(
 
     def load():
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            return executor.map(
+            for x in executor.map(
                 load_single,
                 sorted(partitioned_input.items()),
-            )
+            ):
+                if x is not None:
+                    yield x
 
     df = pd.DataFrame(load())
+    nlp = spacy.load(spacy_model)
+    df = df[df.text.str.len() < nlp.max_length]
+    df["spacy_doc"] = list(nlp.pipe(df.text))
+
     logger.info("DTypes of dataframe: \n%s", df.dtypes)
+
     return df
 
 
 def split_data(
-    text_and_meta_dataframe: pd.DataFrame,
+    text_and_meta_dataframe: pd.DataFrame, train_percentage: int
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    data_train = text_and_meta_dataframe.sample(frac=0.9, random_state=0)
+
+    data_train = text_and_meta_dataframe.sample(
+        frac=train_percentage / 100, random_state=0
+    )
     data_test = text_and_meta_dataframe.drop(data_train.index)
     return data_train, data_test
 

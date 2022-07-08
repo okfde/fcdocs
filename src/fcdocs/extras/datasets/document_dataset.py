@@ -62,8 +62,11 @@ class DocumentDataSet(AbstractDataSet):
                 existing_meta = json.load(f)
         if not text_exists or not image_exists:
             logger.info("Processing PDF %s", self._filepath)
-
-            doc_data = self._load_pdf()
+            try:
+                doc_data = self._load_pdf()
+            except Exception:
+                logger.warning("Failed to load pdf %s", self._filepath, exc_info=True)
+                return None
             if meta_exists:
                 existing_meta.update(doc_data.meta)
                 doc_data = DocumentData(

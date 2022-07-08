@@ -8,7 +8,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=get_text_and_meta,
-                inputs=["pdfdocuments", "params:max_workers"],
+                inputs=["pdfdocuments", "params:max_workers", "params:spacy_model"],
                 outputs="text_and_meta_dataframe",
                 name="get_text_and_meta",
             ),
@@ -26,7 +26,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=split_data,
-                inputs="data_with_features",
+                inputs=["data_with_features", "params:train_percentage"],
                 outputs=["data_train", "data_test"],
                 name="split_data",
             ),

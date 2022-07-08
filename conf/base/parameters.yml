@@ -5,10 +5,14 @@ image_model:
   predict_feature: 'geschwaerzt'
 
 text_model:
-  model_class: "BaselineModel"
-  model_args: {}
-  input_features: ['text']
-  predict_feature: 'bescheid'
+  model_class: "SpacyModel"
+  model_args:
+    config_path: data/05_model_input/spacy_config.cfg
+    trained_pipeline_name: de_core_news_sm
+  input_features: ['text', 'spacy_doc']
+  predict_feature: "Brief"
 
 data_processing:
   max_workers: 4
+  train_percentage: 90
+  spacy_model: de_core_news_sm

@@ -34,8 +34,6 @@ image_model.params:
   filepath: data/09_tracking/image_model_params.json
 
 
-
-
 text_model.scores:
   type: tracking.MetricsDataSet
   filepath: data/09_tracking/text_model_score.json
@@ -43,3 +41,8 @@ text_model.scores:
 text_model.params:
   type: tracking.JSONDataSet
   filepath: data/09_tracking/text_model_param.json
+
+text_model.train_model.model:
+  type: fcdocs.pipelines.text_model.model_dataset.ModelDataSet
+  path: data/06_models/text_model
+  versioned: true

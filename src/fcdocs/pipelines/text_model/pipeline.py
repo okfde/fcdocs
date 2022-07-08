@@ -49,7 +49,12 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="evaluate_model",
             ),
         ],
-        inputs=["model_class", "model_args", "data_train", "data_test"],
+        inputs=[
+            "model_class",
+            "model_args",
+            "data_train",
+            "data_test",
+        ],
         namespace="text_model",
         outputs=["model"],
     )
