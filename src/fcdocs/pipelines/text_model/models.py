@@ -71,7 +71,8 @@ class SpacyModel:
         return df.LABEL > df.NOT_LABEL
 
     def save(self, path: Path):
-        with open(path / "args.json", "w") as f:
+        path.mkdir()
+        with open(path / "kwargs.json", "w") as f:
             json.dump(
                 {
                     "trained_pipeline_name": self.trained_pipeline_name,
@@ -83,7 +84,8 @@ class SpacyModel:
 
     @classmethod
     def load(cls, path: Path):
-        with open(path / "args.json") as f:
-            args = json.load(f)
-        model = cls(args)
-        model.trained_model = spacy.load(path / "spacy_model")
+        with open(path / "kwargs.json") as f:
+            kwargs = json.load(f)
+        model = cls(**kwargs)
+        model.trained_model = spacy.load(str(path / "spacy_model"))
+        return model

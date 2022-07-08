@@ -173,3 +173,19 @@ Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get st
 ## Packaging
 
 [Further information about building project documentation and packaging your project](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
+
+## Testing the models
+
+After you trained a text model with `kedro run --pipeline tm`, you can test it with a pdf using
+
+```shell
+kedro predict-with-text-model data/06_models/text_model/ YOUR_PDF
+```
+
+This will load the newest version of your text model and make a prediction on your pdf file.
+
+If you want to use a specific version of your text model, you can specify it using the `--load-version` option:
+
+```shell
+kedro predict-with-text-model data/06_models/text_model/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDF
+```

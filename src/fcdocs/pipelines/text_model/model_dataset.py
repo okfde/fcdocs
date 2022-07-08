@@ -12,11 +12,11 @@ class ModelDataSet(AbstractVersionedDataSet):
 
     def _load(self):
         load_path = self._get_load_path()
-        with open(load_path / "meta.json", "w") as f:
+        with open(load_path / "meta.json") as f:
             meta = json.load(f)
         model_name = meta["model_name"]
         model = getattr(models, model_name)
-        model.load(load_path / "model")
+        return model.load(load_path / "model")
 
     def _save(self, model) -> None:
         model_name = model.__class__.__name__
