@@ -37,13 +37,14 @@ def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
 
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, float]:
     y_pred = model.predict(X_test)
+    logging.info(f"gold={y_test}, prediction={y_pred}")
     scores = {
         "f1_score": f1_score(y_test, y_pred),
         "macro_f1_score": f1_score(y_test, y_pred, average="macro"),
         "micro_f1_score": f1_score(y_test, y_pred, average="micro"),
         "accuracy": accuracy_score(y_test, y_pred),
         "balanced_accuracy": balanced_accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred, zero_division=0),
         "recall": recall_score(y_test, y_pred),
     }
     logger = logging.getLogger(__name__)
