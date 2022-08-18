@@ -16,8 +16,8 @@ text_model:
   input_features: ['text', 'spacy_doc']
   predict_feature: "Brief"
   selection_score: "balanced_accuracy"
+  train_percentage: 90
 
 data_processing:
   max_workers: 4
-  train_percentage: 90
   spacy_model: de_core_news_sm

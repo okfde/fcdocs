@@ -10,6 +10,7 @@ from .nodes import (
     extract_x_y,
     get_models,
     select_best_model,
+    split_data,
     train_models,
 )
 
@@ -20,32 +21,18 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=extract_x_y,
                 inputs=[
-                    "data_train",
+                    "data_with_features",
                     "params:input_features",
                     "params:predict_feature",
                 ],
-                outputs=["X_train", "y_train"],
+                outputs=["X", "y"],
                 name="extract_train",
             ),
             node(
-                func=extract_x_y,
-                inputs=[
-                    "data_dev",
-                    "params:input_features",
-                    "params:predict_feature",
-                ],
-                outputs=["X_dev", "y_dev"],
-                name="extract_dev",
-            ),
-            node(
-                func=extract_x_y,
-                inputs=[
-                    "data_test",
-                    "params:input_features",
-                    "params:predict_feature",
-                ],
-                outputs=["X_test", "y_test"],
-                name="extract_test",
+                func=split_data,
+                inputs=["X", "y", "params:train_percentage"],
+                outputs=["X_train", "y_train", "X_dev", "y_dev", "X_test", "y_test"],
+                name="split_data",
             ),
             node(
                 func=get_models,
@@ -78,7 +65,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="evalute_best_model",
             ),
         ],
-        inputs=["model_config", "data_train", "data_test", "data_dev"],
+        inputs=["model_config", "data_with_features"],
         namespace="text_model",
         outputs=["best_model"],
     )

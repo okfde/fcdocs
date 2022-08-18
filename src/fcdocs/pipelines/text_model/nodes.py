@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'text_model'
 generated using Kedro 0.18.0
 """
 import logging
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 from sklearn.metrics import (
@@ -84,3 +84,18 @@ def select_best_model(models, scores: List[ModelScore], selection_score: str):
             best_score = score
             best_model = model
     return best_model
+
+
+def split_data(
+    X: pd.DataFrame, y: pd.Series, train_percentage: int
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+
+    X_train = X.sample(frac=train_percentage / 100, random_state=0)
+    X_dev = X.drop(X_train.index).sample(frac=0.5, random_state=0)
+    X_test = X.drop(X_train.index).drop(X_dev.index)
+    y_train = y[X_train.index]
+    y_dev = y[X_dev.index]
+    y_test = y[X_test.index]
+    logger = logging.getLogger(__name__)
+    logger.info(f"train/dev/test: {len(X_train)}/{len(X_dev)}/{len(X_test)}")
+    return X_train, y_train, X_dev, y_dev, X_test, y_test
