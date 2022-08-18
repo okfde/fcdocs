@@ -4,13 +4,18 @@ image_model:
   input_features: ['dark_ratio']
   predict_feature: 'geschwaerzt'
 
+
 text_model:
-  model_class: "SpacyModel"
-  model_args:
-    config_path: data/05_model_input/spacy_config.cfg
-    trained_pipeline_name: de_core_news_sm
+  model_config:
+    - class: "BaselineModel"
+    - class: "SpacyModel"
+      args:
+        config_path: data/05_model_input/spacy_config.cfg
+        trained_pipeline_name: de_core_news_sm
+    - class: "RandomForestClassifierModel"
   input_features: ['text', 'spacy_doc']
   predict_feature: "Brief"
+  selection_score: "balanced_accuracy"
 
 data_processing:
   max_workers: 4

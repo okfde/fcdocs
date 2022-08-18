@@ -20,10 +20,9 @@ def register_pipelines() -> Dict[str, Pipeline]:
     text_model_pipeline = pipeline(
         tm.create_pipeline(),
         inputs={
-            "model_class": "params:text_model.model_class",
-            "model_args": "params:text_model.model_args",
+            "model_config": "params:text_model.model_config",
         },
-        outputs={"model": "text_model.model"},
+        outputs={"best_model": "text_model.model"},
     )
     image_model_pipeline = pipeline(
         im.create_pipeline(),

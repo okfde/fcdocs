@@ -10,6 +10,7 @@ import spacy
 import spacy.cli
 import spacy.training
 import spacy.util
+from joblib import dump, load
 
 
 class BaselineModel:
@@ -18,6 +19,13 @@ class BaselineModel:
 
     def predict(self, data: pd.DataFrame) -> pd.Series:
         return data["text"].str.lower().str.contains("bescheid")
+
+    def save(self, path: Path):
+        pass
+
+    @classmethod
+    def load(cls, path: Path):
+        return cls()
 
 
 class SpacyModel:
@@ -88,4 +96,38 @@ class SpacyModel:
             kwargs = json.load(f)
         model = cls(**kwargs)
         model.trained_model = spacy.load(str(path / "spacy_model"))
+        return model
+
+
+class RandomForestClassifierModel:
+    def fit(self, data, targets) -> "RandomForestClassifierModel":
+        from sklearn.ensemble import RandomForestClassifier
+        from sklearn.feature_extraction.text import TfidfVectorizer
+
+        self._tfidfconverter = TfidfVectorizer(
+            max_features=1500,
+            min_df=5,
+            max_df=0.7,
+            # stop_words=stopwords.words("english"),
+        )
+        X = self._tfidfconverter.fit_transform(data.text).toarray()
+
+        self._classifier = RandomForestClassifier(n_estimators=1000, random_state=0)
+        self._classifier.fit(X, targets)
+        return self
+
+    def predict(self, data: pd.DataFrame) -> pd.Series:
+        X = self._tfidfconverter.transform(data.text).toarray()
+        return pd.Series(self._classifier.predict(X))
+
+    def save(self, path: Path):
+        path.mkdir()
+        dump(self._classifier, path / "classifier.joblib")
+        dump(self._tfidfconverter, path / "tfidfconverter.joblib")
+
+    @classmethod
+    def load(cls, path: Path):
+        model = cls()
+        model._classifier = load(path / "classifier.joblib")
+        model._tfidfconverter = load(path / "tfidfconverter.joblib")
         return model

@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'text_model'
 generated using Kedro 0.18.0
 """
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import pandas as pd
 from sklearn.metrics import (
@@ -16,10 +16,19 @@ from sklearn.metrics import (
 
 from . import models
 
+ModelScore = Dict[str, float]
 
-def get_model(model_class: str, model_args: Dict):
-    model = getattr(models, model_class)(**model_args)
-    return model, {"class": model_class, "args": model_args}
+
+def get_models(model_config: List[Dict[str, Union[str, dict]]]):
+    initialized_models = []
+    model_params = []
+    for model_config in model_config:
+        model_class = model_config["class"]
+        model_args = model_config.get("args", {})
+        model = getattr(models, model_class)(**model_args)
+        initialized_models.append(model)
+        model_params.append({"class": model_class, "args": model_args})
+    return initialized_models, model_params
 
 
 def extract_x_y(data: pd.DataFrame, x_features: List[str], predict_feature: str):
@@ -35,7 +44,7 @@ def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
     return data[features]
 
 
-def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, float]:
+def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> ModelScore:
     y_pred = model.predict(X_test)
     logging.info(f"gold={y_test}, prediction={y_pred}")
     scores = {
@@ -52,5 +61,26 @@ def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, 
     return scores
 
 
-def train_model(model, X_train: pd.DataFrame, y_train: pd.Series):
-    return model.fit(X_train, y_train)
+def evaluate_models(
+    models, X_test: pd.DataFrame, y_test: pd.Series
+) -> List[Dict[str, float]]:
+    scores = [evaluate_model(model, X_test, y_test) for model in models]
+    return scores
+
+
+def train_models(models, X_train: pd.DataFrame, y_train: pd.Series):
+    trained_models = []
+    for model in models:
+        trained_models.append(model.fit(X_train, y_train))
+    return trained_models
+
+
+def select_best_model(models, scores: List[ModelScore], selection_score: str):
+    best_score = None
+    best_model = None
+    for model, model_score in zip(models, scores):
+        score = model_score[selection_score]
+        if best_score is None or best_score < score:
+            best_score = score
+            best_model = model
+    return best_model

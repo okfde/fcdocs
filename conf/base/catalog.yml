@@ -15,9 +15,20 @@ data_processing.text_and_meta_dataframe:
   filepath: data/02_intermediate/text_and_meta_dataframe.pickle
   versioned: true
 
+data_processing.data_with_features:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/data_with_features.pickle
+  versioned: true
+
+
 data_test:
   type: pickle.PickleDataSet
   filepath: data/05_model_input/data_test.pickle
+  versioned: true
+
+data_dev:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/data_dev.pickle
   versioned: true
 
 data_train:
@@ -35,12 +46,14 @@ image_model.params:
 
 
 text_model.scores:
-  type: tracking.MetricsDataSet
+  type: json.JSONDataSet
   filepath: data/09_tracking/text_model_score.json
+  versioned: true
 
 text_model.params:
-  type: tracking.JSONDataSet
+  type: json.JSONDataSet
   filepath: data/09_tracking/text_model_param.json
+  versioned: true
 
 text_model.model:
   type: fcdocs.pipelines.text_model.model_dataset.ModelDataSet

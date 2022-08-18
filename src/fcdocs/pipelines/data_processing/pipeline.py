@@ -26,12 +26,15 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=split_data,
-                inputs=["data_with_features", "params:train_percentage"],
-                outputs=["data_train", "data_test"],
+                inputs=[
+                    "data_with_features",
+                    "params:train_percentage",
+                ],
+                outputs=["data_train", "data_dev", "data_test"],
                 name="split_data",
             ),
         ],
         namespace="data_processing",
         inputs="pdfdocuments",
-        outputs=["data_train", "data_test"],
+        outputs=["data_train", "data_dev", "data_test"],
     )

@@ -59,8 +59,11 @@ def split_data(
     data_train = text_and_meta_dataframe.sample(
         frac=train_percentage / 100, random_state=0
     )
-    data_test = text_and_meta_dataframe.drop(data_train.index)
-    return data_train, data_test
+    data_dev = text_and_meta_dataframe.drop(data_train.index).sample(
+        frac=0.5, random_state=0
+    )
+    data_test = text_and_meta_dataframe.drop(data_train.index).drop(data_dev.index)
+    return data_train, data_dev, data_test
 
 
 def sum_file_sizes(text_and_meta_dataframe: pd.DataFrame) -> int:
