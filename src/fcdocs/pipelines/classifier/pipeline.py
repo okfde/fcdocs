@@ -1,7 +1,3 @@
-"""
-This is a boilerplate pipeline 'text_model'
-generated using Kedro 0.18.0
-"""
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import (
@@ -66,6 +62,6 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
         ],
         inputs=["model_config", "data_with_features"],
-        namespace="text_model",
+        namespace="classifier",
         outputs=["best_model"],
     )

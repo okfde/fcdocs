@@ -47,8 +47,7 @@ python scripts/download_data_fds.py
 The project currently consists of three pipelines:
 
 1. `data_processing` (dp): Cleans the input data and calculates some features from it
-2. `image_model` (im): Trains and evaluates an image-based model
-3. `text_model` (tm): Trains and evaluates a text-based model
+2. `classifier` (cl): Trains and evaluates a classification model
 
 You can run them all using
 
@@ -179,7 +178,7 @@ Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get st
 After you trained a text model with `kedro run --pipeline tm`, you can test it with a pdf using
 
 ```shell
-kedro predict-with-text-model data/06_models/text_model/ YOUR_PDF
+kedro predict-with-classifier data/06_models/classifier/ YOUR_PDF
 ```
 
 This will load the newest version of your text model and make a prediction on your pdf file.
@@ -187,5 +186,5 @@ This will load the newest version of your text model and make a prediction on yo
 If you want to use a specific version of your text model, you can specify it using the `--load-version` option:
 
 ```shell
-kedro predict-with-text-model data/06_models/text_model/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDF
+kedro predict-with-classifier data/06_models/classifier/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDF
 ```

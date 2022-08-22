@@ -1,11 +1,4 @@
-image_model:
-  model_class: "BaselineModel"
-  model_args: {}
-  input_features: ['dark_ratio']
-  predict_feature: 'geschwaerzt'
-
-
-text_model:
+classifier:
   model_config:
     - class: "BaselineModel"
     - class: "SpacyModel"

@@ -1,6 +1,6 @@
-# Pipeline text_model
+# Pipeline classifier
 
-The pipeline for text-based models.
+The pipeline for classification models.
 
 ## Overview
 
@@ -15,10 +15,11 @@ The pipeline needs the `data_train` and `data_test` inputs from the
 `data_processing` pipeline.
 
 It also needs to know which model to train. You can set this in the
-`conf/parameters.yml` file using the `text_model.model_class` parameter.
+`conf/parameters.yml` file using the `classifier.model_class` parameter.
 
 Arguments to be passed to the model constructor can be specified using the
-`text_model.model_args` parameter.
+`classifier.model_args` parameter.
+
 ## Pipeline outputs
 
 The pipeline outputs the trained model in the `model` variable.

@@ -1,7 +1,3 @@
-"""
-This is a boilerplate pipeline 'text_model'
-generated using Kedro 0.18.0
-"""
 import logging
 from typing import Dict, List, Tuple, Union
 

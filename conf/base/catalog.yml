@@ -21,26 +21,17 @@ data_with_features:
   versioned: true
 
 
-image_model.scores:
-  type: tracking.MetricsDataSet
-  filepath: data/09_tracking/image_model_score.json
-
-image_model.params:
-  type: tracking.JSONDataSet
-  filepath: data/09_tracking/image_model_params.json
-
-
-text_model.scores:
+classifier.scores:
   type: json.JSONDataSet
-  filepath: data/09_tracking/text_model_score.json
+  filepath: data/09_tracking/classifier_score.json
   versioned: true
 
-text_model.params:
+classifier.params:
   type: json.JSONDataSet
-  filepath: data/09_tracking/text_model_param.json
+  filepath: data/09_tracking/classifier_param.json
   versioned: true
 
-text_model.model:
-  type: fcdocs.pipelines.text_model.model_dataset.ModelDataSet
-  path: data/06_models/text_model
+classifier.model:
+  type: fcdocs.pipelines.classifier.model_dataset.ModelDataSet
+  path: data/06_models/classifier
   versioned: true

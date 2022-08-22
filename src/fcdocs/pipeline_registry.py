@@ -4,9 +4,8 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 from kedro.pipeline.modular_pipeline import pipeline
 
+from .pipelines import classifier as tm
 from .pipelines import data_processing as dp
-from .pipelines import image_model as im
-from .pipelines import text_model as tm
 
 
 def register_pipelines() -> Dict[str, Pipeline]:
@@ -17,27 +16,15 @@ def register_pipelines() -> Dict[str, Pipeline]:
 
     """
     data_processing_pipeline = dp.create_pipeline()
-    text_model_pipeline = pipeline(
+    classifier_pipeline = pipeline(
         tm.create_pipeline(),
         inputs={
-            "model_config": "params:text_model.model_config",
+            "model_config": "params:classifier.model_config",
         },
-        outputs={"best_model": "text_model.model"},
+        outputs={"best_model": "classifier.model"},
     )
-    image_model_pipeline = pipeline(
-        im.create_pipeline(),
-        inputs={
-            "model_class": "params:image_model.model_class",
-            "model_args": "params:image_model.model_args",
-        },
-        outputs={"model": "image_model.model"},
-    )
-
     return {
-        "__default__": data_processing_pipeline
-        + text_model_pipeline
-        + image_model_pipeline,
+        "__default__": data_processing_pipeline + classifier_pipeline,
         "dp": data_processing_pipeline,
-        "tm": text_model_pipeline,
-        "im": image_model_pipeline,
+        "tm": classifier_pipeline,
     }

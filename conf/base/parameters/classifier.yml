@@ -1,4 +1,4 @@
-# This is a boilerplate parameters config generated for pipeline 'text_model'
+# This is a boilerplate parameters config generated for pipeline 'classifier'
 # using Kedro 0.18.0.
 #
 # Documentation for this file format can be found in "Parameters"

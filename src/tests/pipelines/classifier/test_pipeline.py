@@ -1,5 +1,5 @@
 """
-This is a boilerplate test file for pipeline 'text_model'
+This is a boilerplate test file for pipeline 'classifier'
 generated using Kedro 0.18.0.
 Please add your pipeline tests here.
 
