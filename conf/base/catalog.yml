@@ -35,3 +35,19 @@ classifier.model:
   type: fcdocs.pipelines.classifier.model_dataset.ModelDataSet
   path: data/06_models/classifier
   versioned: true
+
+
+clustering.scores:
+  type: json.JSONDataSet
+  filepath: data/09_tracking/clustering_score.json
+  versioned: true
+
+clustering.params:
+  type: json.JSONDataSet
+  filepath: data/09_tracking/clustering_param.json
+  versioned: true
+
+clustering.model:
+  type: fcdocs.pipelines.clustering.model_dataset.ModelDataSet
+  path: data/06_models/clustering
+  versioned: true

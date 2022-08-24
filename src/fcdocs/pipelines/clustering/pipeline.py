@@ -3,7 +3,7 @@ from kedro.pipeline import Pipeline, node, pipeline
 from .nodes import (
     evaluate_model,
     evaluate_models,
-    extract_x_y,
+    extract_data,
     get_models,
     select_best_model,
     split_data,
@@ -15,19 +15,18 @@ def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         [
             node(
-                func=extract_x_y,
+                func=extract_data,
                 inputs=[
                     "data_with_features",
                     "params:input_features",
-                    "params:predict_feature",
                 ],
-                outputs=["X", "y"],
+                outputs="X",
                 name="extract_data",
             ),
             node(
                 func=split_data,
-                inputs=["X", "y", "params:train_percentage"],
-                outputs=["X_train", "y_train", "X_dev", "y_dev", "X_test", "y_test"],
+                inputs=["X", "params:train_percentage"],
+                outputs=["X_train", "X_dev", "X_test"],
                 name="split_data",
             ),
             node(
@@ -38,13 +37,13 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_models,
-                inputs=["untrained_models", "X_train", "y_train"],
+                inputs=["untrained_models", "X_train"],
                 outputs="models",
                 name="train_models",
             ),
             node(
                 func=evaluate_models,
-                inputs=["models", "X_dev", "y_dev"],
+                inputs=["models", "X_dev"],
                 outputs="scores",
                 name="evaluate_models",
             ),
@@ -56,12 +55,12 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_model,
-                inputs=["best_model", "X_test", "y_test"],
+                inputs=["best_model", "X_test"],
                 outputs="score",
                 name="evalute_best_model",
             ),
         ],
         inputs=["model_config", "data_with_features"],
-        namespace="classifier",
+        namespace="clustering",
         outputs=["best_model"],
     )

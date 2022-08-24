@@ -11,6 +11,14 @@ classifier:
   selection_score: "balanced_accuracy"
   train_percentage: 90
 
+clustering:
+  model_config:
+    - class: "BaselineModel"
+    - class: "SpacyKMeansModel"
+  input_features: ['text', 'spacy_doc']
+  selection_score: "calinski_harabasz_score"
+  train_percentage: 90
+
 data_processing:
   max_workers: 4
   spacy_model: de_core_news_sm
