@@ -1,6 +1,7 @@
 """Command line tools for manipulating a Kedro project.
 Intended to be invoked via `kedro`."""
 from pathlib import Path
+from typing import List
 
 import click
 from kedro.config import ConfigLoader
@@ -9,6 +10,8 @@ from kedro.framework.cli.utils import CONTEXT_SETTINGS
 from kedro.framework.project import settings
 from kedro.io import DataCatalog, MemoryDataSet, Version
 from kedro.runner import SequentialRunner
+from rich.console import Console
+from rich.table import Table
 
 from fcdocs.extras.datasets.document_dataset import DocumentDataSet
 from fcdocs.pipelines import data_processing as dp
@@ -23,8 +26,7 @@ def cli():
     """Command line tools for manipulating a Kedro project."""
 
 
-def get_document_df(pdf_file: Path):
-
+def get_document_df(pdf_files: List[Path]):
     conf_path = str(settings.CONF_SOURCE)
     conf_loader = ConfigLoader(conf_source=conf_path, env="local")
     conf_parameters = conf_loader.get("parameters*")
@@ -43,7 +45,10 @@ def get_document_df(pdf_file: Path):
             "params:data_processing.spacy_model": MemoryDataSet(),
         }
     )
-    io.save("pdfdocuments", {"1": DocumentDataSet(pdf_file).load})
+    io.save(
+        "pdfdocuments",
+        {str(pdf_file): DocumentDataSet(pdf_file).load for pdf_file in pdf_files},
+    )
     io.save("params:data_processing.max_workers", dp_config["max_workers"])
     io.save("params:data_processing.spacy_model", dp_config["spacy_model"])
 
@@ -56,22 +61,40 @@ def get_document_df(pdf_file: Path):
 @project_group.command()
 @click.argument("model", type=Path)
 @click.option("--load-version", default=None)
-@click.argument("pdf_file", type=Path)
-def predict_with_classifier(model, load_version, pdf_file):
+@click.argument("pdf_files", type=Path, nargs=-1, required=True)
+def predict_with_classifier(model, load_version, pdf_files):
     version = Version(load_version, None)
     model = ModelDataSet(model, version).load()
 
-    prediction = model.predict(get_document_df(pdf_file))[0]
-    print("Prediction:", "Yes" if prediction else "No")
+    prediction = model.predict(get_document_df(pdf_files))
+
+    table = Table(title="Class Predictions")
+    table.add_column("Filename", justify="left")
+    table.add_column("Prediction", justify="right")
+
+    for file, pred in zip(pdf_files, prediction):
+        table.add_row(str(file), "Yes" if pred else "No")
+
+    console = Console()
+    console.print(table)
 
 
 @project_group.command()
 @click.argument("model", type=Path)
 @click.option("--load-version", default=None)
-@click.argument("pdf_file", type=Path)
-def predict_with_clustering(model, load_version, pdf_file):
+@click.argument("pdf_files", type=Path, nargs=-1, required=True)
+def predict_with_clustering(model, load_version, pdf_files):
     version = Version(load_version, None)
     model = ClusteringModelDataSet(model, version).load()
 
-    prediction = model.predict(get_document_df(pdf_file))[0]
-    print("Cluster:", prediction)
+    prediction = model.predict(get_document_df(pdf_files))
+
+    table = Table(title="Cluster Predictions")
+    table.add_column("Filename", justify="left")
+    table.add_column("Prediction", justify="right")
+
+    for file, pred in zip(pdf_files, prediction):
+        table.add_row(str(file), str(pred))
+
+    console = Console()
+    console.print(table)
