@@ -47,7 +47,8 @@ python scripts/download_data_fds.py
 The project currently consists of three pipelines:
 
 1. `data_processing` (dp): Cleans the input data and calculates some features from it
-2. `classifier` (cl): Trains and evaluates a classification model
+2. `classifier` (cf): Trains and evaluates a classification model
+3. `clustering` (cs): Trains and evaluates a clustering model
 
 You can run them all using
 
@@ -56,11 +57,11 @@ kedro run
 ```
 
 To run only one of the pipelines you can add the `--pipeline` parameter with the
-short-name of a pipeline (`dp`, `im`, `tm`)
-For example to only run the image model pipeline, use
+short-name of a pipeline (`dp`, `cf`, `cs`)
+For example to only run the classifier pipeline, use
 
 ```
-kedro run --pipeline im
+kedro run --pipeline cf
 ```
 
 > ℹ️ You need to run the data processing pipeline at least once before running
@@ -174,17 +175,34 @@ Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get st
 [Further information about building project documentation and packaging your project](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
 
 ## Testing the models
+### Classification
 
-After you trained a text model with `kedro run --pipeline tm`, you can test it with a pdf using
+After you trained a classification with `kedro run --pipeline cf`, you can test it with on some pdfs using
 
 ```shell
-kedro predict-with-classifier data/06_models/classifier/ YOUR_PDF
+kedro predict-with-classifier data/06_models/classifier/ YOUR_PDF1 [YOUR_PDF2 ...]
 ```
 
-This will load the newest version of your text model and make a prediction on your pdf file.
+This will load the newest version of your model and make a prediction on your pdf files.
 
-If you want to use a specific version of your text model, you can specify it using the `--load-version` option:
+If you want to use a specific version of your model, you can specify it using the `--load-version` option:
 
 ```shell
-kedro predict-with-classifier data/06_models/classifier/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDF
+kedro predict-with-classifier data/06_models/classifier/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDFS
+```
+
+### Clustering
+
+After you trained a clustering with `kedro run --pipeline cs`, you can test it with on some pdfs using
+
+```shell
+kedro predict-with-clustering data/06_models/clustering/ YOUR_PDF1 [YOUR_PDF2 ...]
+```
+
+This will load the newest version of your model and make a prediction on your pdf files.
+
+If you want to use a specific version of your model, you can specify it using the `--load-version` option:
+
+```shell
+kedro predict-with-classifier data/06_models/clustering/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDFS
 ```
