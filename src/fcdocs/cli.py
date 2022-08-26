@@ -1,7 +1,8 @@
 """Command line tools for manipulating a Kedro project.
 Intended to be invoked via `kedro`."""
+import shutil
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import click
 from kedro.config import ConfigLoader
@@ -98,3 +99,24 @@ def predict_with_clustering(model, load_version, pdf_files):
 
     console = Console()
     console.print(table)
+
+
+@project_group.command()
+@click.argument("model", type=Path)
+@click.option("--load-version", default=None)
+@click.argument("out_dir", type=Path)
+@click.argument("pdf_files", type=Path, nargs=-1, required=True)
+def predict_clusters_into_folder(
+    model: Path, load_version: Optional[str], out_dir: Path, pdf_files: List[Path]
+):
+    version = Version(load_version, None)
+    model = ClusteringModelDataSet(model, version).load()
+
+    prediction = model.predict(get_document_df(pdf_files))
+
+    out_dir.mkdir(exist_ok=True)
+    for file, pred in zip(pdf_files, prediction):
+        cluster_dir = out_dir / str(pred)
+        cluster_dir.mkdir(exist_ok=True)
+        out_file = cluster_dir / file.name
+        shutil.copy(file, out_file)
