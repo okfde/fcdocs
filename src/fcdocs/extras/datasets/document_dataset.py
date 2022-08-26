@@ -107,14 +107,14 @@ class DocumentDataSet(AbstractDataSet):
             wand_image.transform(resize="{}x".format(THUMBNAIL_WIDTH))
             img_blob = wand_image.make_blob("RGB")
             image = Image.frombytes("RGB", wand_image.size, img_blob)
-        page_texts = PAGE_FEED_MARKER.join(pdf.get_text())
+        page_texts = PAGE_FEED_MARKER.join(pdf.get_text(use_ocr=True))
         return DocumentData(text=page_texts, image=image, meta=meta)
 
     def _exists(self) -> bool:
         return Path(self._filepath.as_posix()).exists()
 
     def _save(self, data: DocumentData) -> None:
-        """Saves image data to the specified filepath"""
+        """Saves document data to the specified filepath"""
         text_filepath, image_filepath, meta_filepath = self.get_filepaths()
         with open(text_filepath, "w") as f:
             f.write(data.text)
