@@ -20,9 +20,10 @@ data_path.mkdir(exist_ok=True)
 
 remaining = args.limit
 offset = args.offset
+session = requests.Session()
 while remaining > 0:
     url = BASE_URL.format(offset=offset, limit=min(remaining, args.limit))
-    req = requests.get(url)
+    req = session.get(url)
     data = req.json()["objects"]
     count = len(data)
     remaining -= count
@@ -34,7 +35,7 @@ while remaining > 0:
         file_path = data_path / f"{file_id}.pdf"
         if not file_path.exists():
             print(f"Downloading to {file_path}")
-            file_req = requests.get(file_url, stream=True)
+            file_req = session.get(file_url, stream=True)
             file_req.raise_for_status()
             with open(file_path, "wb") as f:
                 for chunk in file_req.iter_content(chunk_size=4096):
