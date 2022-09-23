@@ -1,20 +1,8 @@
-black~=22.0
 de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.3.0/de_core_news_sm-3.3.0-py3-none-any.whl
-flake8>=3.7.9, <4.0
-ipython>=7.31.1, <8.0
-isort~=5.0
-jupyter~=1.0
-jupyterlab~=3.0
-kedro-viz==4.5.0
-kedro==0.18.0
-nbstripout~=0.4
-pytest-cov~=3.0
-pytest-mock>=1.7.1, <2.0
-pytest~=6.2
+kedro==0.18.2
 scikit-learn==1.0.2
 spacy==3.3.1
 torch~=1.12.1
 torchvision~=0.13.1
-tqdm==4.64.0
 
--e git+https://github.com/okfde/django-filingcabinet.git@main#egg=django-filingcabinet
+django-filingcabinet @ https://github.com/okfde/django-filingcabinet/archive/refs/heads/main.zip#egg=django-filingcabinet
