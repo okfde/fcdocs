@@ -83,7 +83,7 @@ class SpacyModel:
         return self
 
     def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
-        df = pd.DataFrame(x.cats for x in self.trained_model.pipe(data.text))
+        df = pd.DataFrame(x.cats for x in self.trained_model.pipe(data["text"]))
         return df.LABEL > df.NOT_LABEL, df[["LABEL", "NOT_LABEL"]].max(axis=1)
 
     def save(self, path: Path):
@@ -118,14 +118,14 @@ class RandomForestClassifierModel:
             max_df=0.7,
             # stop_words=stopwords.words("english"),
         )
-        X = self._tfidfconverter.fit_transform(data.text).toarray()
+        X = self._tfidfconverter.fit_transform(data["text"]).toarray()
 
         self._classifier = RandomForestClassifier(n_estimators=1000, random_state=0)
         self._classifier.fit(X, targets)
         return self
 
     def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
-        X = self._tfidfconverter.transform(data.text).toarray()
+        X = self._tfidfconverter.transform(data["text"]).toarray()
         probas = self._classifier.predict_proba(X)
         score = probas.max(axis=1)
         prediction = self._classifier.classes_[probas.argmax(axis=1)]

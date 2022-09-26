@@ -26,7 +26,7 @@ class BaselineModel:
 
     def process(self, data: pd.DataFrame) -> np.ndarray:
         processed_data = (
-            data.text.str[:10]
+            data["text"].str[:10]
             .str.strip()
             .str.ljust(10, "a")
             .apply(lambda s: np.array([ord(x) for x in s]))

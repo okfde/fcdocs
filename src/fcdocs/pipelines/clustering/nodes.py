@@ -22,7 +22,7 @@ def get_models(model_config: List[Dict[str, Union[str, dict]]]):
 
 
 def extract_data(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
-    data = data[data.text.str.len() > 0]
+    data = data[data["text"].str.len() > 0]
     return data[features]
 
 
