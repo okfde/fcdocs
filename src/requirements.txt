@@ -1,8 +1,7 @@
-de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.3.0/de_core_news_sm-3.3.0-py3-none-any.whl
 kedro==0.18.2
 scikit-learn==1.0.2
+pandas==1.4.4
 spacy==3.3.1
 torch~=1.12.1
 torchvision~=0.13.1
-
-django-filingcabinet @ https://github.com/okfde/django-filingcabinet/archive/refs/heads/main.zip#egg=django-filingcabinet
+django-filingcabinet

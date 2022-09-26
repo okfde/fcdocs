@@ -12,3 +12,5 @@ pytest-cov~=3.0
 pytest-mock>=1.7.1, <2.0
 pytest~=6.2
 tqdm==4.64.0
+de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.3.0/de_core_news_sm-3.3.0-py3-none-any.whl
+django-filingcabinet @ https://github.com/okfde/django-filingcabinet/archive/refs/heads/main.zip#egg=django-filingcabinet
