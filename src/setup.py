@@ -1,3 +1,6 @@
+import codecs
+import os
+import re
 from setuptools import find_packages, setup
 
 entry_point = "fcdocs = fcdocs.__main__:main"
@@ -14,9 +17,24 @@ with open("requirements.txt", encoding="utf-8") as f:
         if req and not req.startswith("--"):
             requires.append(req)
 
+
+def read(*parts):
+    filename = os.path.join(os.path.dirname(__file__), *parts)
+    with codecs.open(filename, encoding="utf-8") as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
+
 setup(
     name="fcdocs",
-    version="0.1",
+    version=find_version("fcdocs", "__init__.py"),
     packages=find_packages(exclude=["tests"]),
     entry_points={"console_scripts": [entry_point]},
     install_requires=requires,
