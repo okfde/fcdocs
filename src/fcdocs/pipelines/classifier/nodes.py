@@ -41,7 +41,7 @@ def extract_X(data: pd.DataFrame, features: List[str]) -> pd.DataFrame:
 
 
 def evaluate_model(model, X_test: pd.DataFrame, y_test: pd.Series) -> ModelScore:
-    y_pred = model.predict(X_test)
+    y_pred, _ = model.predict(X_test)
     logging.info(f"gold={y_test}, prediction={y_pred}")
     scores = {
         "f1_score": f1_score(y_test, y_pred),

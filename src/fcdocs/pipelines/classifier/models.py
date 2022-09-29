@@ -4,6 +4,7 @@ import random
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Tuple
 
 import pandas as pd
 import spacy
@@ -22,8 +23,10 @@ class BaselineModel:
     def fit(self, data, targets) -> "BaselineModel":
         return self
 
-    def predict(self, data: pd.DataFrame) -> pd.Series:
-        return data["text"].str.lower().str.contains("bescheid")
+    def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
+        prediction = data["text"].str.lower().str.contains("bescheid")
+        score = pd.Series(1, index=prediction.index)
+        return prediction, score
 
     def save(self, path: Path):
         pass
@@ -79,9 +82,9 @@ class SpacyModel:
         shutil.rmtree(self.tmpdir)
         return self
 
-    def predict(self, data: pd.DataFrame) -> pd.Series:
+    def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         df = pd.DataFrame(x.cats for x in self.trained_model.pipe(data.text))
-        return df.LABEL > df.NOT_LABEL
+        return df.LABEL > df.NOT_LABEL, df[["LABEL", "NOT_LABEL"]].max(axis=1)
 
     def save(self, path: Path):
         path.mkdir()
@@ -121,9 +124,12 @@ class RandomForestClassifierModel:
         self._classifier.fit(X, targets)
         return self
 
-    def predict(self, data: pd.DataFrame) -> pd.Series:
+    def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         X = self._tfidfconverter.transform(data.text).toarray()
-        return pd.Series(self._classifier.predict(X))
+        probas = self._classifier.predict_proba(X)
+        score = probas.max(axis=1)
+        prediction = self._classifier.classes_[probas.argmax(axis=1)]
+        return pd.Series(prediction), pd.Series(score)
 
     def save(self, path: Path):
         path.mkdir()
@@ -181,7 +187,6 @@ def get_device():
 
 class ImageSeriesDataset(torch.utils.data.Dataset):
     def __init__(self, image_series, targets, device, trans):
-        print("myDataset init")
         self.x = (
             image_series.apply(lambda x: x.convert("L"))
             .apply(trans)
@@ -244,7 +249,7 @@ class CNNImageModel:
 
         return self
 
-    def predict(self, data: pd.DataFrame) -> pd.Series:
+    def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
         bw_imgs = data.image.apply(lambda x: x.convert("L"))
         image_trans = bw_imgs.apply(self.trans)
 
@@ -257,7 +262,8 @@ class CNNImageModel:
 
         outputs = torch.cat(outputs)
         predictions = outputs.argmax(dim=1)
-        return pd.Series(predictions.cpu())
+        scores = outputs.max(dim=1)
+        return pd.Series(predictions.cpu()), pd.Series(scores.values.cpu())
 
     def save(self, path: Path):
         torch.save(self.net.state_dict(), path)
@@ -273,8 +279,10 @@ class BaselineImageModel:
     def fit(self, data: pd.DataFrame, targets: pd.Series) -> "BaselineImageModel":
         return self
 
-    def predict(self, data: pd.DataFrame) -> pd.Series:
-        return data["dark_ratio"] >= 0.01
+    def predict(self, data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
+        prediction = data["dark_ratio"] >= 0.01
+        score = pd.Series(1, index=prediction.index)
+        return prediction, score
 
     def save(self, path: Path):
         pass

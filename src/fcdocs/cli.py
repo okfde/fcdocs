@@ -67,14 +67,15 @@ def predict_with_classifier(model, load_version, pdf_files):
     version = Version(load_version, None)
     model = ModelDataSet(model, version).load()
 
-    prediction = model.predict(get_document_df(pdf_files))
+    prediction, score = model.predict(get_document_df(pdf_files))
 
     table = Table(title="Class Predictions")
     table.add_column("Filename", justify="left")
     table.add_column("Prediction", justify="right")
+    table.add_column("Score", justify="right")
 
-    for file, pred in zip(pdf_files, prediction):
-        table.add_row(str(file), "Yes" if pred else "No")
+    for file, pred, sc in zip(pdf_files, prediction, score):
+        table.add_row(str(file), "Yes" if pred else "No", "{0:.2%}".format(sc))
 
     console = Console()
     console.print(table)
