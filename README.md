@@ -206,3 +206,11 @@ If you want to use a specific version of your model, you can specify it using th
 ```shell
 kedro predict-with-classifier data/06_models/clustering/ --load-version 2022-07-08T21.22.07.918Z YOUR_PDFS
 ```
+
+## Packaging the models
+
+To package a model into a single file, which can be imported into fcdocs-annotate, you can use the `package-model` subcommand:
+
+```
+kedro package-model data/06_models/clustering/ OUTPUT_FILENAME
+```

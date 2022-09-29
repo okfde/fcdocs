@@ -120,3 +120,14 @@ def predict_clusters_into_folder(
         cluster_dir.mkdir(exist_ok=True)
         out_file = cluster_dir / file.name
         shutil.copy(file, out_file)
+
+
+@project_group.command()
+@click.argument("model", type=Path)
+@click.option("--load-version", default=None)
+@click.argument("out_file", type=Path)
+def package_model(model: Path, load_version: Optional[str], out_file: Path):
+    version = Version(load_version, None)
+    model = ClusteringModelDataSet(model, version)
+
+    model.zip_into(out_file)

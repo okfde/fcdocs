@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path, PurePosixPath
 
 from kedro.io import AbstractVersionedDataSet
@@ -32,3 +33,14 @@ class ModelDataSet(AbstractVersionedDataSet):
 
     def _describe(self):
         return dict(version=self._version)
+
+    def zip_into(self, out_file: Path):
+        if out_file.suffix == ".zip":
+            out_file = out_file.with_suffix("")
+
+        shutil.make_archive(
+            out_file,
+            "zip",
+            root_dir=self._get_load_path(),
+            base_dir=".",
+        )
