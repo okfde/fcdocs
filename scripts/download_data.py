@@ -20,6 +20,8 @@ args = parser.parse_args()
 data_path = args.data_path
 data_path.mkdir(exist_ok=True)
 
+session = requests.Session()
+
 
 def get_objects(
     endpoint: str,
@@ -34,7 +36,7 @@ def get_objects(
         batch_limit = batch_size
         if remaining is not None:
             batch_limit = min(remaining, batch_limit)
-        req = requests.get(endpoint, params={"limit": batch_limit, "offset": offset})
+        req = session.get(endpoint, params={"limit": batch_limit, "offset": offset})
         req.raise_for_status()
 
         result = req.json()[key]
@@ -52,7 +54,7 @@ def get_objects(
 
 def get_document(document_id: int) -> Optional[dict]:
     doc_url = urllib.parse.urljoin(args.document_endpoint, str(doc_id))
-    document_req = requests.get(doc_url)
+    document_req = session.get(doc_url)
     if document_req.status_code == 404:
         return
     document_req.raise_for_status()
@@ -86,7 +88,7 @@ for doc_id in tqdm.tqdm(annotated_docs):
             )
         file_id = document["id"]
 
-        file_req = requests.get(file_url, stream=True, allow_redirects=False)
+        file_req = session.get(file_url, stream=True, allow_redirects=False)
         file_req.raise_for_status()
         content_type = file_req.headers["content-type"]
         if "pdf" not in content_type:
